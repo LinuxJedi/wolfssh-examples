@@ -276,6 +276,8 @@ static int wsUserAuth(byte authType,
     PwMapList* list;
     PwMap* map;
     byte authHash[WC_SHA256_DIGEST_SIZE];
+    wc_Sha256 sha;
+    byte flatSz[4];
 
     if (ctx == NULL) {
         return WOLFSSH_USERAUTH_FAILURE;
@@ -287,26 +289,22 @@ static int wsUserAuth(byte authType,
     }
 
     /* Hash the password or public key with its length */
-    {
-        wc_Sha256 sha;
-        byte flatSz[4];
-        wc_InitSha256(&sha);
-        if (authType == WOLFSSH_USERAUTH_PASSWORD) {
-            c32toa(authData->sf.password.passwordSz, flatSz);
-            wc_Sha256Update(&sha, flatSz, sizeof(flatSz));
-            wc_Sha256Update(&sha,
-                            authData->sf.password.password,
-                            authData->sf.password.passwordSz);
-        }
-        else if (authType == WOLFSSH_USERAUTH_PUBLICKEY) {
-            c32toa(authData->sf.publicKey.publicKeySz, flatSz);
-            wc_Sha256Update(&sha, flatSz, sizeof(flatSz));
-            wc_Sha256Update(&sha,
-                            authData->sf.publicKey.publicKey,
-                            authData->sf.publicKey.publicKeySz);
-        }
-        wc_Sha256Final(&sha, authHash);
+    wc_InitSha256(&sha);
+    if (authType == WOLFSSH_USERAUTH_PASSWORD) {
+        c32toa(authData->sf.password.passwordSz, flatSz);
+        wc_Sha256Update(&sha, flatSz, sizeof(flatSz));
+        wc_Sha256Update(&sha,
+                        authData->sf.password.password,
+                        authData->sf.password.passwordSz);
     }
+    else if (authType == WOLFSSH_USERAUTH_PUBLICKEY) {
+        c32toa(authData->sf.publicKey.publicKeySz, flatSz);
+        wc_Sha256Update(&sha, flatSz, sizeof(flatSz));
+        wc_Sha256Update(&sha,
+                        authData->sf.publicKey.publicKey,
+                        authData->sf.publicKey.publicKeySz);
+    }
+    wc_Sha256Final(&sha, authHash);
 
     list = (PwMapList*)ctx;
     map = list->head;

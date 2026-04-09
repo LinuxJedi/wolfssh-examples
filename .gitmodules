@@ -1,18 +1,12 @@
-[submodule "make-testsuite/wolfssl"]
-	path = make-testsuite/wolfssl
-	url = https://github.com/wolfSSL/wolfssl.git
-[submodule "make-testsuite/wolfssh"]
-	path = make-testsuite/wolfssh
-	url = https://github.com/wolfSSL/wolfssh.git
-[submodule "echo-server/wolfssl"]
-	path = echo-server/wolfssl
-	url = https://github.com/wolfSSL/wolfssl.git
-[submodule "echo-server/wolfssh"]
-	path = echo-server/wolfssh
-	url = https://github.com/wolfSSL/wolfssh.git
 [submodule "echo-server/FreeRTOS-Kernel"]
 	path = echo-server/FreeRTOS-Kernel
 	url = https://github.com/FreeRTOS/FreeRTOS-Kernel.git
 [submodule "echo-server/FreeRTOS-Plus-TCP"]
 	path = echo-server/FreeRTOS-Plus-TCP
 	url = https://github.com/FreeRTOS/FreeRTOS-Plus-TCP.git
+[submodule "wolfssl"]
+	path = wolfssl
+	url = https://github.com/wolfSSL/wolfssl.git
+[submodule "wolfssh"]
+	path = wolfssh
+	url = https://github.com/wolfSSL/wolfssh.git

@@ -19,8 +19,8 @@
 #ifndef USER_SETTINGS_H
 #define USER_SETTINGS_H
 
-/* Math library: single-precision by default */
-#define WOLFSSL_SP
+/* Math library: single-precision */
+#define WOLFSSL_SP_MATH_ALL
 #define WOLFSSL_HAVE_SP_RSA
 #define WOLFSSL_HAVE_SP_DH
 #define WOLFSSL_HAVE_SP_ECC
@@ -33,7 +33,6 @@
 #endif
 
 /* wolfSSL core */
-#define WOLFSSL_KEY_GEN
 #define NO_MD5
 #define NO_DSA
 #define WOLFCRYPT_ONLY
@@ -44,7 +43,6 @@
 #define ECC_TIMING_RESISTANT
 #define WC_RSA_BLINDING
 #define HAVE_AESGCM
-#define HAVE_AESCCM
 #define WOLFSSL_SHA384
 #define WOLFSSL_SHA512
 

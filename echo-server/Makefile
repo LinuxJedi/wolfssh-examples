@@ -3,16 +3,16 @@ MKDIR ?= mkdir
 OBJ = obj
 
 # wolfSSH
-WOLFSSH ?= wolfssh
+WOLFSSH ?= ../wolfssh
 SSHDIR = $(WOLFSSH)/src
 SSHINC = $(WOLFSSH)
-OBJSSH = $(OBJ)/$(WOLFSSH)
+OBJSSH = $(OBJ)/wolfssh
 
 # wolfSSL
-WOLFSSL ?= wolfssl
+WOLFSSL ?= ../wolfssl
 CRYPTDIR = $(WOLFSSL)/wolfcrypt/src
 CRYPTINC = $(WOLFSSL)
-OBJCRYPT = $(OBJ)/$(WOLFSSL)
+OBJCRYPT = $(OBJ)/wolfssl
 
 # FreeRTOS Kernel
 FREERTOS_KERNEL ?= FreeRTOS-Kernel
