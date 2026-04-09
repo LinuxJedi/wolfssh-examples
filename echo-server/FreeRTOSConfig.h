@@ -74,7 +74,7 @@
 /* Logging — used by FreeRTOS-Plus-TCP's FreeRTOS_printf / FreeRTOS_debug_printf */
 #define configPRINTF( X )    printf X
 
-/* Trap errors during development */
+/* Assert is a no-op; define to assert() or abort() for debugging */
 #define configASSERT( x )
 
 /* Optional functions */

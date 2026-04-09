@@ -96,7 +96,7 @@ The default in `FreeRTOSIPConfig.h` is interface 2. If `veth1` has a different
 number on your system, either edit the define or override at compile time:
 
 ```
-make CPPFLAGS="-DipconfigNETWORK_INTERFACE_TO_USE=3 $(CPPFLAGS)"
+make EXTRA_CPPFLAGS=-DipconfigNETWORK_INTERFACE_TO_USE=3
 ```
 
 ### Teardown
@@ -124,6 +124,10 @@ ssh -p 22222 jill@10.0.0.2
 Password: `upthehill`
 
 Other test credentials: `jack` / `fetchapail`
+
+**Security warning:** The above usernames/passwords and the SSH host keys
+bundled with this demo are for testing only. Replace all credentials and keys
+before any non-demo use.
 
 ### Control keys
 

@@ -324,7 +324,8 @@ static int wsUserAuth(byte authType,
                 }
             }
             else {
-                return WOLFSSH_USERAUTH_INVALID_AUTHTYPE;
+                map = map->next;
+                continue;
             }
         }
         map = map->next;
@@ -355,6 +356,7 @@ int echoServerInit(WOLFSSH_CTX** ctx, PwMapList* pwMapList)
     *ctx = wolfSSH_CTX_new(WOLFSSH_ENDPOINT_SERVER, NULL);
     if (*ctx == NULL) {
         printf("Couldn't allocate SSH CTX data.\n");
+        wolfSSH_Cleanup();
         return -1;
     }
 
@@ -368,11 +370,17 @@ int echoServerInit(WOLFSSH_CTX** ctx, PwMapList* pwMapList)
     bufSz = load_key(useEcc, buf, SCRATCH_BUFFER_SZ);
     if (bufSz == 0) {
         printf("Couldn't load key.\n");
+        wolfSSH_CTX_free(*ctx);
+        *ctx = NULL;
+        wolfSSH_Cleanup();
         return -1;
     }
     if (wolfSSH_CTX_UsePrivateKey_buffer(*ctx, buf, bufSz,
                                          WOLFSSH_FORMAT_ASN1) < 0) {
         printf("Couldn't use key buffer.\n");
+        wolfSSH_CTX_free(*ctx);
+        *ctx = NULL;
+        wolfSSH_Cleanup();
         return -1;
     }
 
@@ -380,14 +388,28 @@ int echoServerInit(WOLFSSH_CTX** ctx, PwMapList* pwMapList)
     bufSz = (word32)strlen(samplePasswordBuffer);
     memcpy(buf, samplePasswordBuffer, bufSz);
     buf[bufSz] = 0;
-    LoadPasswordBuffer(buf, bufSz, pwMapList);
+    if (LoadPasswordBuffer(buf, bufSz, pwMapList) != 0) {
+        printf("Couldn't load password buffer.\n");
+        PwMapListDelete(pwMapList);
+        wolfSSH_CTX_free(*ctx);
+        *ctx = NULL;
+        wolfSSH_Cleanup();
+        return -1;
+    }
 
     /* Load public keys */
     pubKeyBuf = useEcc ? samplePublicKeyEccBuffer : samplePublicKeyRsaBuffer;
     bufSz = (word32)strlen(pubKeyBuf);
     memcpy(buf, pubKeyBuf, bufSz);
     buf[bufSz] = 0;
-    LoadPublicKeyBuffer(buf, bufSz, pwMapList);
+    if (LoadPublicKeyBuffer(buf, bufSz, pwMapList) != 0) {
+        printf("Couldn't load public key buffer.\n");
+        PwMapListDelete(pwMapList);
+        wolfSSH_CTX_free(*ctx);
+        *ctx = NULL;
+        wolfSSH_Cleanup();
+        return -1;
+    }
 
     printf("wolfSSH Echo Server initialized on port %d\n", ECHO_SERVER_PORT);
     return 0;
@@ -429,6 +451,8 @@ int echoServerAccept(WOLFSSH_CTX* ctx, WOLFSSH** ssh,
 
         printf("SSH accept error: %d (%s)\n", error,
                wolfSSH_ErrorToName(error));
+        wolfSSH_free(*ssh);
+        *ssh = NULL;
         return -1;
     } while (1);
 

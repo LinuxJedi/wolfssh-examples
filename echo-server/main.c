@@ -106,6 +106,10 @@ static void sshEchoServerTask(void* pvParameters)
 
     if (FreeRTOS_listen(xListenSocket, 1) != 0) {
         printf("FreeRTOS_listen failed.\n");
+        FreeRTOS_closesocket(xListenSocket);
+        echoServerCleanup(ctx, &pwMapList);
+        vTaskDelete(NULL);
+        return;
     }
     printf("Listening on port %d...\n", ECHO_SERVER_PORT);
 
@@ -163,16 +167,6 @@ void vApplicationIPNetworkEventHook_Multi(eIPCallbackEvent_t eNetworkEvent,
     if (eNetworkEvent == eNetworkUp) {
         printf("Network interface is up.\n");
     }
-}
-
-/* DHCP hook — accept any address offered by the server */
-eDHCPCallbackAnswer_t xApplicationDHCPHook(eDHCPCallbackPhase_t eDHCPPhase,
-                                            uint32_t ulIPAddress)
-{
-    (void)eDHCPPhase;
-    (void)ulIPAddress;
-
-    return eDHCPContinue;
 }
 
 /* Called by FreeRTOS-Plus-TCP when a ping reply is received */

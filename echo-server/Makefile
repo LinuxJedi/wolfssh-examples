@@ -30,11 +30,13 @@ FREERTOS_TCP_NI = $(FREERTOS_TCP_PORT)/NetworkInterface/linux
 FREERTOS_TCP_BUF = $(FREERTOS_TCP_PORT)/BufferManagement
 OBJFREERTOS_TCP = $(OBJ)/freertos_tcp
 
-CPPFLAGS ?= -I. \
+EXTRA_CPPFLAGS ?=
+CPPFLAGS := -I. \
   -I$(SSHINC) -I$(CRYPTINC) \
   -I$(FREERTOS_KERNEL)/include -I$(FREERTOS_PORT) \
   -I$(FREERTOS_TCP_INC) -I$(FREERTOS_TCP_PORT)/Compiler/GCC \
-  -DWOLFSSL_USER_SETTINGS
+  -DWOLFSSL_USER_SETTINGS \
+  $(EXTRA_CPPFLAGS)
 
 ifeq ($(BUILD),debug)
     DEBUG ?= -O0 -g -DDEBUG_WOLFSSH
@@ -45,7 +47,7 @@ LDFLAGS ?= -lm -lpthread -lpcap
 
 .PHONY: clean all
 
-all: $(OBJ) echo-server keys/server-key-rsa.der
+all: $(OBJ) echo-server
 
 # Application objects
 $(OBJ)/main.o: main.c
@@ -166,13 +168,6 @@ $(OBJFREERTOS_TCP)/BufferAllocation_2.o: $(FREERTOS_TCP_BUF)/BufferAllocation_2.
 $(OBJFREERTOS_TCP)/NetworkInterface.o: $(FREERTOS_TCP_NI)/NetworkInterface.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
 
-# --- Keys ---
-
-keys/server-key-rsa.der:
-	@$(MKDIR) -p keys
-	@cp $(WOLFSSH)/keys/server-key-rsa.der keys
-	@cp $(WOLFSSH)/keys/server-key-rsa.pem keys
-
 # --- Object directories ---
 
 $(OBJ):
@@ -181,4 +176,4 @@ $(OBJ):
 # --- Clean ---
 
 clean:
-	rm -rf echo-server libwolfssh.a libfreertos.a libfreertos_tcp.a $(OBJ) keys
+	rm -rf echo-server libwolfssh.a libfreertos.a libfreertos_tcp.a $(OBJ)
